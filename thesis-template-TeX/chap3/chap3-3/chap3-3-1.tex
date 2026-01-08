@@ -1,0 +1,107 @@
+\subsection{データベース設計} % 表で
+
+本システムで用いるデータベースの構成を以下の表に示す．
+
+\begin{table}[htb]
+  \centering
+  \caption{ユーザ情報を格納するテーブルの構造}
+  \label{tab:user}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    項目                & データ型    & 説明                         \\
+    \hline
+    backend\_user\_id & INT64   & 本システム内でのユーザ識別子             \\
+    user\_id          & *INT64  & 在室管理システム内でのユーザ識別子（NULL許容）  \\
+    slack\_id         & *STRING & Slack上のユーザID（NULL許容）       \\
+    channel\_id       & *STRING & ユーザとSlackBotのDM識別子（NULL許容） \\
+    user\_name        & *STRING & ユーザの名前（NULL許容）             \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \caption{帰宅推奨時刻を格納するテーブルの構造}
+  \label{tab:recommended}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    項目                & データ型     & 説明              \\
+    \hline
+    recommended\_id   & INT64    & テーブル内での識別子      \\
+    recommended\_time & DATETIME & 帰宅推奨時刻          \\
+    member\_ids       & INT64[ ] & 最多区間内のユーザID（複数） \\
+    status            & BOOL     & 帰宅推奨時刻が近いか判定    \\
+    created\_date     & DATETIME & レコード作成日時        \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \caption{提示する時刻を格納するテーブルの構造}
+  \label{tab:bustime}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    項目              & データ型     & 説明               \\
+    \hline
+    bustime\_id     & INT64    & テーブル内での識別子       \\
+    recommended\_id & INT64    & 紐付ける帰宅推奨時刻のカラム   \\
+    previous\_time  & DATETIME & 帰宅推奨時刻前のバスの時刻    \\
+    nearest\_time   & DATETIME & 帰宅推奨時刻に最も近いバスの時刻 \\
+    next\_time      & DATETIME & 帰宅推奨時刻後のバスの時刻    \\
+    created\_date   & DATETIME & レコード作成日時         \\
+    end\_time       & DATETIME & 投票締切時刻           \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \caption{投票情報を格納するテーブルの構造}
+  \label{tab:vote}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    項目                & データ型  & 説明                \\
+    \hline
+    vote\_id          & INT64 & テーブル内での識別子        \\
+    bustime\_id       & INT64 & 紐付ける提示する時刻のカラム    \\
+    backend\_user\_id & INT64 & 投票者のユーザID         \\
+    previous          & BOOL  & previous\_timeの投票 \\
+    nearest           & BOOL  & nearest\_timeの投票  \\
+    next              & BOOL  & next\_timeの投票     \\
+    created\_date     & BOOL  & レコード作成日時          \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \caption{投票結果を格納するテーブルの構造}
+  \label{tab:result}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    項目            & データ型     & 説明             \\
+    \hline
+    result\_id    & INT64    & テーブル内での識別子     \\
+    bustime\_id   & INT64    & 紐付ける帰宅推奨時刻のカラム \\
+    bus\_time     & DATETIME & 最多投票のバスの時刻     \\
+    member        & INT64    & bus\_timeの投票数  \\
+    created\_date & DATETIME & レコード作成日時       \\
+    \hline
+  \end{tabular}
+\end{table}
+
+これらのテーブルは表\ref{tab:user}〜\ref{tab:result}に示すように，ユーザ情報を基点として，帰宅推奨時刻，提示する時刻，投票情報，投票結果を段階的に保存する構成としている．
+本システムでは，算出した帰宅推奨時刻および利用状況を後から分析可能とするため，各テーブルに作成日時を保持している．
+これにより，単一時点の結果のみを保持するのではなく，時刻提示から投票，最終的な提示時刻決定に至るまでの履歴を一貫して保存できる．
+このような履歴志向の設計により，利用状況の変化や投票傾向の分析など，後の解析が可能となる．
+
+ユーザ情報テーブルにおいては，一部のカラムをNULL許容とする設計としている．
+これは，本システムが在室管理システムやSlackなどの外部システムとの連携を前提としており，初期段階では片側の情報のみが取得可能な場合を想定しているためである．
+例えば，組織内の構成員が複数システム間で完全に一致しない場合や，外部サービスとの連携が未完了の状態であっても，取得可能な識別子のみを用いてユーザレコードを作成できるようにしている．
+この設計により，システム間の段階的な紐付けを可能とし，運用開始時の制約を緩和している．
+
+また，一部の情報は正規化を行わず，帰宅推奨時刻に強く依存するデータは同一テーブル内にまとめて保持する設計にしている．
+これは，推奨時刻の算出が高頻度で行われる一方，各レコードが持つ情報量は限定的であり，テーブルの分割による管理コストが相対的に大きくなると判断したためである．
+さらに，推奨時刻ごとに関連する情報を一括して確認できる構成とし，運用時および実装時の可読性を重視した．
+本研究では，このような運用上の利点を優先した設計を採用している．

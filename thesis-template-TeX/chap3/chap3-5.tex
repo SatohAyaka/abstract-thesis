@@ -1,0 +1,31 @@
+\section{時刻の提示インタフェース}
+本節では，帰宅推奨時刻や投票状況を全ユーザが確認可能な形で提示するためのインタフェース設計について述べる．
+個々のユーザを特定可能な情報は含めず，その場にいる誰もが状況を把握できる点を重視した．
+
+
+ディスプレイで3種類の画面表示と音声での通知を行う．
+データベースに保存された情報を参照し画面に提示する設計とし，ユーザが他端末から閲覧した場合も同様の動作をすると想定している．
+1分ごとに画面を更新し，その時点のデータベースに保存された内容に応じて画面遷移させる(図\ref{fig:disflow})．% こっちじゃなく条件の画像にした方がいいかも
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9\linewidth]{flow-2.png} % suzuki
+  \caption{画面遷移（仮）}
+  \label{fig:disflow}
+
+\end{figure}
+
+\input{chap3/chap3-5/chap3-5-1.tex}
+\input{chap3/chap3-5/chap3-5-2.tex}
+\input{chap3/chap3-5/chap3-5-3.tex}
+
+% \begin{figure}[htb]
+%   \centering
+%   \subcaptionbox{三択の時刻}{% % suzuki
+%     \includegraphics[width=0.4\linewidth]{selectDisplay.png}}	% suzuki
+%   \hspace{3mm}
+%   \subcaptionbox{最多投票の時刻}{%	% 良く考えたら投票人数による表示の違い全部載せた方がいいのでは？
+%     \includegraphics[width=0.4\linewidth]{resultDisplay.png}}	% suzuki 
+%   \caption{時刻の提示を行う画面}
+%   \label{fig:2}
+% \end{figure}

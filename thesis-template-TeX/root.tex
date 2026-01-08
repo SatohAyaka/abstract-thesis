@@ -6,11 +6,14 @@
 % 使いたい人は使う
 \usepackage{personal}
 % 図挿入用
-\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[dvipdfmx]{graphicx}
 \usepackage{latexsym}
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{ulinej}
+\usepackage{url}
+\usepackage{amsmath}
 
 \pagestyle{headings}
 
@@ -46,11 +49,18 @@
 %目次を自動的に作る。
 \tableofcontents
 
+%目次ページにはページ番号をつけない
+\thispagestyle{empty}
+%第１章のページ番号を1にセットする
+\setcounter{page}{0}
+
 % 本文
 
 \include{chap1}
 
 \include{chap2}
+
+\include{chap0}
 
 \include{chap3}
 
@@ -63,9 +73,9 @@
 \include{reference}
 
 % これ以降，付録となる
-\appendix
+% \appendix
 
-\include{cover}
+% \include{cover}
 
 \end{document}
 
