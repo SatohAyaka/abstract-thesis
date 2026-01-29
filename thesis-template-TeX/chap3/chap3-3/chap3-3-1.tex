@@ -8,13 +8,13 @@
   \label{tab:user}
   \begin{tabular}{|l|l|l|}
     \hline
-    項目                & データ型    & 説明                         \\
+    \textbf{項目}       & \textbf{データ型} & \textbf{説明}                \\
     \hline
-    backend\_user\_id & INT64   & 本システム内でのユーザ識別子             \\
-    user\_id          & *INT64  & 在室管理システム内でのユーザ識別子（NULL許容）  \\
-    slack\_id         & *STRING & Slack上のユーザID（NULL許容）       \\
-    channel\_id       & *STRING & ユーザとSlackBotのDM識別子（NULL許容） \\
-    user\_name        & *STRING & ユーザの名前（NULL許容）             \\
+    backend\_user\_id & INT64         & 本システム内でのユーザ識別子             \\
+    user\_id          & *INT64        & 在室管理システム内でのユーザ識別子（NULL許容）  \\
+    slack\_id         & *STRING       & Slack上のユーザID（NULL許容）       \\
+    channel\_id       & *STRING       & ユーザとSlackbotのDM識別子（NULL許容） \\
+    user\_name        & *STRING       & ユーザの名前（NULL許容）             \\
     \hline
   \end{tabular}
 \end{table}
@@ -25,13 +25,13 @@
   \label{tab:recommended}
   \begin{tabular}{|l|l|l|}
     \hline
-    項目                & データ型     & 説明              \\
+    \textbf{項目}       & \textbf{データ型} & \textbf{説明}     \\
     \hline
-    recommended\_id   & INT64    & テーブル内での識別子      \\
-    recommended\_time & DATETIME & 帰宅推奨時刻          \\
-    member\_ids       & INT64[ ] & 最多区間内のユーザID（複数） \\
-    status            & BOOL     & 帰宅推奨時刻が近いか判定    \\
-    created\_date     & DATETIME & レコード作成日時        \\
+    recommended\_id   & INT64         & テーブル内での識別子      \\
+    recommended\_time & DATETIME      & 帰宅推奨時刻          \\
+    member\_ids       & INT64[ ]      & 最多区間内のユーザID（複数） \\
+    status            & BOOL          & 帰宅推奨時刻が近いか判定    \\
+    created\_date     & DATETIME      & レコード作成日時        \\
     \hline
   \end{tabular}
 \end{table}
@@ -42,15 +42,15 @@
   \label{tab:bustime}
   \begin{tabular}{|l|l|l|}
     \hline
-    項目              & データ型     & 説明               \\
+    \textbf{項目}     & \textbf{データ型} & \textbf{説明}      \\
     \hline
-    bustime\_id     & INT64    & テーブル内での識別子       \\
-    recommended\_id & INT64    & 紐付ける帰宅推奨時刻のカラム   \\
-    previous\_time  & DATETIME & 帰宅推奨時刻前のバスの時刻    \\
-    nearest\_time   & DATETIME & 帰宅推奨時刻に最も近いバスの時刻 \\
-    next\_time      & DATETIME & 帰宅推奨時刻後のバスの時刻    \\
-    created\_date   & DATETIME & レコード作成日時         \\
-    end\_time       & DATETIME & 投票締切時刻           \\
+    bustime\_id     & INT64         & テーブル内での識別子       \\
+    recommended\_id & INT64         & 紐付ける帰宅推奨時刻のカラム   \\
+    previous\_time  & DATETIME      & 帰宅推奨時刻前のバスの時刻    \\
+    nearest\_time   & DATETIME      & 帰宅推奨時刻に最も近いバスの時刻 \\
+    next\_time      & DATETIME      & 帰宅推奨時刻後のバスの時刻    \\
+    created\_date   & DATETIME      & レコード作成日時         \\
+    end\_time       & DATETIME      & 投票締切時刻           \\
     \hline
   \end{tabular}
 \end{table}
@@ -61,15 +61,15 @@
   \label{tab:vote}
   \begin{tabular}{|l|l|l|}
     \hline
-    項目                & データ型  & 説明                \\
+    \textbf{項目}       & \textbf{データ型} & \textbf{説明}       \\
     \hline
-    vote\_id          & INT64 & テーブル内での識別子        \\
-    bustime\_id       & INT64 & 紐付ける提示する時刻のカラム    \\
-    backend\_user\_id & INT64 & 投票者のユーザID         \\
-    previous          & BOOL  & previous\_timeの投票 \\
-    nearest           & BOOL  & nearest\_timeの投票  \\
-    next              & BOOL  & next\_timeの投票     \\
-    created\_date     & BOOL  & レコード作成日時          \\
+    vote\_id          & INT64         & テーブル内での識別子        \\
+    bustime\_id       & INT64         & 紐付ける提示する時刻のカラム    \\
+    backend\_user\_id & INT64         & 投票者のユーザID         \\
+    previous          & BOOL          & previous\_timeの投票 \\
+    nearest           & BOOL          & nearest\_timeの投票  \\
+    next              & BOOL          & next\_timeの投票     \\
+    created\_date     & BOOL          & レコード作成日時          \\
     \hline
   \end{tabular}
 \end{table}
@@ -80,13 +80,13 @@
   \label{tab:result}
   \begin{tabular}{|l|l|l|}
     \hline
-    項目            & データ型     & 説明             \\
+    \textbf{項目}   & \textbf{データ型} & \textbf{説明}    \\
     \hline
-    result\_id    & INT64    & テーブル内での識別子     \\
-    bustime\_id   & INT64    & 紐付ける帰宅推奨時刻のカラム \\
-    bus\_time     & DATETIME & 最多投票のバスの時刻     \\
-    member        & INT64    & bus\_timeの投票数  \\
-    created\_date & DATETIME & レコード作成日時       \\
+    result\_id    & INT64         & テーブル内での識別子     \\
+    bustime\_id   & INT64         & 紐付ける帰宅推奨時刻のカラム \\
+    bus\_time     & DATETIME      & 最多投票のバスの時刻     \\
+    member        & INT64         & bus\_timeの投票数  \\
+    created\_date & DATETIME      & レコード作成日時       \\
     \hline
   \end{tabular}
 \end{table}

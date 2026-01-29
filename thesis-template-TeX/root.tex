@@ -2,7 +2,7 @@
 %  愛知工業大学経営情報科学部情報科学科
 %    LaTeXテンプレート(2015.12.22)
 %
-\documentclass[openany]{jbook}
+\documentclass[openany]{jreport}
 % 使いたい人は使う
 \usepackage{personal}
 % 図挿入用
@@ -14,6 +14,15 @@
 \usepackage{ulinej}
 \usepackage{url}
 \usepackage{amsmath}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{caption}
+\usepackage{enumitem}
+
+
+\captionsetup[table]{justification=centering}
+
+
 
 \pagestyle{headings}
 
@@ -45,15 +54,14 @@
 \begin{document}
 
 \include{title}
+\include{title}
 
 %目次を自動的に作る。
 \tableofcontents
-
-%目次ページにはページ番号をつけない
+\addtocontents{toc}{\protect\thispagestyle{empty}}
 \thispagestyle{empty}
 %第１章のページ番号を1にセットする
 \setcounter{page}{0}
-
 % 本文
 
 \include{chap1}
@@ -73,9 +81,10 @@
 \include{reference}
 
 % これ以降，付録となる
-% \appendix
+\appendix
 
 % \include{cover}
+\include{api}
 
 \end{document}
 

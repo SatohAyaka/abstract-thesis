@@ -1,0 +1,274 @@
+% 付録（API一覧，レスポンス一覧とその意図まとめ）
+\chapter[提案システムで作成したAPIリクエスト・レスポンス一覧]{提案システムで作成した\\APIリクエスト・レスポンス一覧}
+本研究で作成した Web API の一覧を以下の表\ref{tab:AllAPI}に示す．
+各エンドポイントは，本論で定義した API 分類に対応している．
+なお，実際の呼び出し時には，これらのエンドポイントにシステムごとの BASE URL を付与して利用する．
+本システムで扱う各種管理 API において登録されるレコードには，識別子および登録時刻を表すタイムスタンプがバックエンド側で自動的に付与され，クライアントからの指定を必要としない．
+
+
+\begin{table}[htb]
+  \centering
+  \caption{本システムで実装したAPIエンドポイント一覧}
+  \label{tab:AllAPI}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{API分類} & \textbf{エンドポイント名} & \textbf{役割概要}          \\
+    \hline
+    ユーザ・連携API      & /api/user         & ユーザ情報を管理するテーブルの操作を行う   \\
+    ユーザ・連携API      & /api/slack        & Slack通知・ユーザの紐付けを行う     \\
+    帰宅推奨時刻管理API    & /api/recommended  & 帰宅推奨時刻を格納するテーブルの操作を行う  \\
+    提示時刻管理API      & /api/bustime      & 提示する時刻を格納するテーブルの操作を行う  \\
+    投票管理API        & /api/vote         & 投票情報を格納するテーブルの操作を行う    \\
+    投票結果管理API      & /api/result       & 最多投票の時刻を格納するテーブルの操作を行う \\
+    \hline
+  \end{tabular}
+\end{table}
+
+
+\begin{table}[htb]
+  \captionsetup[table]{justification=centering}
+  \centering
+  \caption{ユーザ・連携APIの仕様}
+  \label{tab:userAPI}
+  \begin{tabular}{|
+    >{\centering\arraybackslash}m{1.5cm}|
+    >{\raggedright\arraybackslash}m{5cm}|
+    >{\centering\arraybackslash}m{2cm}|
+    >{\centering\arraybackslash}m{4.5cm}|}
+    \hline
+    \textbf{HTTPメソッド} & \textbf{エンドポイント}            & \textbf{パラメータ} & \textbf{役割} \\
+    \hline
+    POST
+                      & /api/user
+                      & \makecell[c]{staywatch                                     \\ slack \\ name \\ channel\_id}
+                      & ユーザ情報の登録                                                   \\
+    \hline
+    PUT
+                      & /api/user/\{BackendUserId\}
+                      & \makecell[c]{staywatch                                     \\ slack \\ name \\ channel\_id}
+                      & ユーザ情報の更新                                                   \\
+    \hline
+    GET
+                      & /api/user
+                      & \makecell[c]{slack}
+                      & ユーザ情報の取得                                                   \\
+    \hline
+    POST
+                      & /api/slack/connect
+                      & \makecell[c]{staywatch                                     \\ slack}
+                      & 自動で紐付け出来なかったユーザ情報の更新                                       \\
+    \hline
+    POST
+                      & /api/slack/notify
+                      & \makecell[c]{member                                        \\ bustime}
+                      & DMの送信                                                      \\
+    \hline
+  \end{tabular}
+\end{table}
+
+
+なお，POST /api/user において指定するクエリパラメータである staywatch は int 型のパラメータであり，slack および name，channel\_id は string 型のパラメータとしている．
+staywatch は滞在推定システムのユーザ識別子を，slack は Slack のユーザ識別子を，name はユーザ名を，channel\_id はユーザと Slackbot とユーザの DM の識別子を示している．
+これらは連携するサービスの識別子の型に合わせる必要があり，本システムでは name が一致するユーザ情報を DB のコンテナ作成時に自動的に紐付け，channel\_idを取得し格納している．
+staywatch，slack，name はそれぞれ独立した識別子として扱い，いずれかが既に DB に登録されている場合には重複登録を防ぐためエラーを返却する．
+レスポンスについては，登録したレコードの識別子（BackendUserId）を JSON 形式のオブジェクトとして返却する．
+
+PUT /api/user/\{BackendUserId\} において指定するパスパラメータでは，情報を更新するレコードの識別子を取得する．
+クエリパラメータでは同様に staywatch，slack，name，channel\_id を取得し，DB に格納する．
+レスポンスについては，更新後のレコードを JSON 形式のオブジェクトとして返却する．
+
+GET /api/user において指定するクエリパラメータである staywatch および slack，channel\_id はそれぞれ連携する外部システムにおける識別子を用いて指定する．
+本 API ではユーザ名などの比較的推測されやすい情報による検索は提供せず，各システムの識別子が既に分かっている場合にのみユーザ情報を取得できる設計としている．
+レスポンスについては，該当のレコードを JSON 形式のオブジェクトとして返却し，該当ユーザがいない場合は空配列を返却する．
+
+POST /api/slack/connect において指定するクエリパラメータである staywatch は int 型，slack は string 型のパラメータとしている．
+本 API はコンテナ起動時にユーザ情報を自動的に紐付ける際，name に表記揺れが存在する場合の簡易的な紐付けに利用する．
+staywatch に対応する識別子が存在しない場合や DM の channel\_id が取得できない場合，ユーザ情報の更新に失敗した場合にエラーを返却する．
+また，POST /api/slack/notify において指定するクエリパラメータである member および bustime は int 型のパラメータであり，それぞれ DM を送信する対象の staywatch と 送信する時刻2つ〜3つを表している．
+
+
+\begin{table}[htb]
+  \captionsetup[table]{justification=centering}
+  \centering
+  \caption{帰宅推奨時刻管理APIの仕様}
+  \label{tab:recommendedAPI}
+  \begin{tabular}{|
+    >{\centering\arraybackslash}m{1.5cm}|
+    >{\raggedright\arraybackslash}m{6cm}|
+    >{\centering\arraybackslash}m{2cm}|
+    >{\centering\arraybackslash}m{3.5cm}|}
+    \hline
+    \textbf{HTTPメソッド} & \textbf{エンドポイント}                & \textbf{パラメータ} & \textbf{役割} \\
+    \hline
+    POST
+                      & /api/recommended
+                      & \makecell[c]{time                                              \\member}
+                      & 帰宅推奨時刻の登録                                                      \\
+    \hline
+    GET
+                      & /api/recommended/latest/status
+                      &
+                      & 最新の帰宅推奨時刻の有効判定取得                                               \\
+    \hline
+    GET
+                      & /api/recommended/latest/members
+                      &
+                      & 最新の対象メンバ取得                                                     \\
+    \hline
+  \end{tabular}
+\end{table}
+
+なお，POST /api/recommended において指定するクエリパラメータである time および member はいずれも int 型のパラメータであり，それぞれ帰宅推奨時刻および対象メンバを表す．
+分単位で表現された帰宅推奨時刻は登録日を付与し，タイムスタンプと同様の DATETIME 型へ変換した上で DB に格納する．
+time パラメータが指定されない場合には，帰宅推奨時刻を取得できないためエラーを返却する．
+対象メンバは滞在推定システムの ID を用いて表現されており，バックエンド側において該当の ID 全てを本システム固有の ID に変換した上で DB に格納する．
+レスポンスについては，登録したレコードの識別子（RecommendedId）および処理結果を示すステータス（Status）を JSON 形式のオブジェクトとして返却する．
+
+
+また，GET /api/recommended/latest/status は最新のレコードのステータスを返却し，GET /api/recommended/latest/members は対象となるメンバの識別子を要素とする int 型の配列を JSON 形式で返却する．
+このようなレスポンス構成とした理由は，クライアント側における後続処理の制御および，関連するデータ管理を容易にするためである．
+GET /api/recommended において処理結果を示すステータスを返却し，登録処理の成否に応じた以降の処理分岐を可能としている．
+また，返却される識別子（RecommendedId）は，後続の提示時刻管理処理において対象となる帰宅推奨時刻を一意に参照するために利用される．
+さらに，通常はフロントエンド側から参照の必要がない情報についても，必要最小限のデータのみを取得可能とし，何らかの理由により事前の情報が欠落した場合でも処理を継続できる構成としている．
+
+
+\begin{table}[htb]
+  \captionsetup[table]{justification=centering}
+  \centering
+  \caption{提示時刻管理APIの仕様}
+  \label{tab:bustimeAPI}
+  \begin{tabular}{|
+    >{\centering\arraybackslash}m{1.5cm}|
+    >{\raggedright\arraybackslash}m{6cm}|
+    >{\centering\arraybackslash}m{2cm}|
+    >{\centering\arraybackslash}m{3cm}|}
+    \hline
+    \textbf{HTTPメソッド} & \textbf{エンドポイント}               & \textbf{パラメータ} & \textbf{役割} \\
+    \hline
+    POST
+                      & /api/bustime/\{RecommendedId\}
+                      & \makecell[c]{previous                                         \\nearest\\next}
+                      & 提示する時刻の登録                                                     \\
+    \hline
+    GET
+                      & /api/bustime/\{BustimeId\}
+                      &
+                      & 指定した識別子のレコード取得                                                \\
+    \hline
+    GET
+                      & /api/bustime/latest
+                      &
+                      & 最新のレコードの識別子取得                                                 \\
+    \hline
+  \end{tabular}
+\end{table}
+
+POST /api/bustime/\{RecommendedId\} において指定するパスパラメータでは，対応する帰宅推奨時刻のレコードの識別子を取得し，DB に格納する．
+パスパラメータが指定されない場合にはエンドポイントが成立しないため 404 エラーを返却する．
+また，指定された識別子に対応する帰宅推奨時刻のレコードが存在しない場合には，提示時刻の登録処理が実行できないため，エラーを JSON 形式で返却する．
+クエリパラメータである previous および nearest，next はいずれも int 型であり，帰宅推奨時刻に近い複数のバス時刻の中からそれぞれ一つ前，最も近い時刻，および一つ後の時刻を表す．
+分単位で表現された帰宅推奨時刻に近い複数のバス時刻は登録日を付与し，タイムスタンプと同様の DATETIME 型へ変換した上で DB に格納する．
+なお，previous，nearest，next のいずれか一つでも取得できなかった場合は不正な入力としてエラーを返す．
+また，該当するバスが存在しない場合には 0 が入力されるため，その場合は 0:00 として DB に格納する．
+投票締切時刻は previous から 15 分前の時刻を基本とし，現在時刻との差が 5 分以内である場合には現在時刻の分数に 5 分を加算した時刻を用いる．
+これらの処理はバックエンド側で自動的に行われ，算出された時刻を DATETIME 型へ変換した上で DB に格納する．
+レスポンスについては，登録したレコードの識別子（BustimeId）を JSON 形式のオブジェクトとして返却する．
+
+
+また，GET /api/bustime/\{BustimeId\} は指定のレコードのステータスを返却する．
+パスパラメータが指定されない場合にはエンドポイントが成立しないため 404 エラーを返却する．
+指定された識別子に対応するレコードを JSON 形式で返却し，識別子として 0 が指定された場合に限り全レコードを返却する．
+GET /api/bustime/latest は最新のレコードの識別子（BustimeId）を返却する．
+これにより，最新レコードの識別子を基点として他テーブルに対する操作が可能となり，表示用の情報が必要な場合には，当該識別子を用いて対応するレコードを取得し必要な情報を取得できる．
+
+
+\begin{table}[htb]
+  \captionsetup[table]{justification=centering}
+  \centering
+  \caption{投票管理APIの仕様}
+  \label{tab:voteAPI}
+  \begin{tabular}{|
+    >{\centering\arraybackslash}m{1.5cm}|
+    >{\raggedright\arraybackslash}m{6cm}|
+    >{\centering\arraybackslash}m{2cm}|
+    >{\centering\arraybackslash}m{3cm}|}
+    \hline
+    \textbf{HTTPメソッド} & \textbf{エンドポイント}          & \textbf{パラメータ} & \textbf{役割} \\
+    \hline
+    POST
+                      & /api/vote/\{SlackUserId\}
+                      & vote
+                      & 投票の登録                                                    \\
+    \hline
+    GET
+                      & /api/vote/\{BustimeId\}
+                      &
+                      & 指定した識別子のレコード取得                                           \\
+    \hline
+  \end{tabular}
+\end{table}
+
+本 API は，特定のコミュニケーションツールに依存せず投票機能の提供を目的として設計している．
+これにより，将来的に異なるツールやインタフェースからの投票にも対応可能な構成としている．
+なお，本研究で実装した Slack 上での投票機能においては，本 API を直接利用していない．
+
+
+POST /api/vote/\{SlackUserId\} のパスパラメータはコミュニケーションツールの ID(SlackUserId)を用いて表現されており，バックエンド側において該当の ID 全てを本システム固有の ID に変換した上で DB に格納する．
+また，投票対象となる BustimeId をバックエンド側において，自動的に最新の BustimeId を取得し，対応する投票情報として格納する．
+クエリパラメータである vote は区切り文字を用いて要素を抽出し，複数投票に対応させている．
+例えば，vote=previous,nearest の場合 previous と nearest に投票する．
+このような指定により，取得対象をパラメータ名として明示的に指定できる．
+これにより，API を利用する側のシステムにおいて，取得条件の判別や制御を容易に行えるという利点がある．
+投票先である previous，nearest，next は boolean 型として管理し，初期状態ではすべて false を適用する．
+投票が行われた場合に該当項目のみを true に更新し，各投票先の選択状態を明示的に保持する．
+なお，最新の BustimeId に対応する result レコードがすでに存在する場合は，当該 BustimeId に対する投票は締め切られているものとみなしエラーメッセージを返却する．
+
+また，GET /api/vote/\{BustimeId\} は指定の識別子に対して投票された全レコードを JSON 形式で返却する．
+パスパラメータが指定されない場合にはエンドポイントが成立しないため 404 エラーを返却する．
+指定された識別子に対応するレコードを JSON 形式で取得する．
+識別子に対応するレコードに対して投票が行われていなかった場合空配列を返却し，識別子として 0 が指定された場合に限り全レコードを取得する．
+また，レコードを取得した後，同一ユーザから複数の投票が存在する場合は，各ユーザにつき最新の投票レコードのみを抽出して返却する．
+
+
+\begin{table}[htb]
+  \captionsetup[table]{justification=centering}
+  \centering
+  \caption{投票結果管理APIの仕様}
+  \label{tab:resultAPI}
+  \begin{tabular}{|
+    >{\centering\arraybackslash}m{1.5cm}|
+    >{\centering\arraybackslash}m{6cm}|
+    >{\centering\arraybackslash}m{2cm}|
+    >{\centering\arraybackslash}m{3cm}|}
+    \hline
+    \textbf{HTTPメソッド} & \textbf{エンドポイント}          & \textbf{パラメータ} & \textbf{役割} \\
+    \hline
+    POST
+                      & /api/result/\{BustimeId\}
+                      &
+                      & 最多投票の時刻の登録                                               \\
+    \hline
+    GET
+                      & /api/result/\{BustimeId\}
+                      &
+                      & 指定した識別子のレコード取得                                           \\
+    \hline
+    GET
+                      & /api/result/latest
+                      &
+                      & 最新のレコード取得                                                \\
+    \hline
+  \end{tabular}
+\end{table}
+
+POST /api/result/\{BustimeId\}において指定するパスパラメータでは，対応する提示する時刻のレコードの識別子を取得する．
+自動的に該当レコードの最新の投票状況を取得し，最多の投票先と票数を取得する．
+このとき，同票の時刻があった場合は早い時刻を，投票がなかった場合は帰宅推奨時刻に最も近い時刻となるように選出し，提示する時刻のレコードから対応する時刻を格納する．
+なお，BustimeId に対応する result レコードがすでに存在する場合は，当該 BustimeId に対する投票は既に登録したものとみなしエラーメッセージを返却する．
+レスポンスについては，登録したレコードをJSON 形式のオブジェクトとして返却する．
+
+
+また，GET /api/result/\{BustimeId\} は指定のレコードのステータスを返却する．
+パスパラメータが指定されない場合にはエンドポイントが成立しないため 404 エラーを返却する．
+指定された識別子に対応するレコードを JSON 形式で返却する．
+GET /api/result/latest は最新のレコードを JSON 形式で返却する．

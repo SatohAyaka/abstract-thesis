@@ -1,38 +1,52 @@
+\thispagestyle {empty}
 \contentsline {chapter}{\numberline {第1章}はじめに}{1}{}%
 \contentsline {section}{\numberline {1.1}背景}{1}{}%
 \contentsline {section}{\numberline {1.2}目的とアプローチ}{1}{}%
 \contentsline {section}{\numberline {1.3}論文構成}{2}{}%
 \contentsline {chapter}{\numberline {第2章}関連研究}{3}{}%
-\contentsline {section}{\numberline {2.1}インフォーマルなコミュニケーションを支援する研究}{3}{}%
-\contentsline {section}{\numberline {2.2}情報提示による行動変容支援に関する研究}{3}{}%
-\contentsline {chapter}{\numberline {第3章}先行研究「在室管理システム上で未来の在室情報を扱う拡張機能」}{4}{}%
-\contentsline {section}{\numberline {3.1}}{4}{}%
-\contentsline {chapter}{\numberline {第4章}帰宅同行支援システム「leaving-match」}{5}{}%
-\contentsline {section}{\numberline {4.1}想定利用環境}{5}{}%
-\contentsline {section}{\numberline {4.2}提案システムの設計}{6}{}%
-\contentsline {section}{\numberline {4.3}データ管理}{7}{}%
-\contentsline {subsection}{\numberline {4.3.1}データベース設計}{7}{}%
-\contentsline {subsection}{\numberline {4.3.2}API設計}{8}{}%
-\contentsline {section}{\numberline {4.4}提示する時刻の算出}{9}{}%
-\contentsline {subsection}{\numberline {4.4.1}帰宅予測時刻の取得}{9}{}%
-\contentsline {subsection}{\numberline {4.4.2}最多区間の抽出}{10}{}%
-\contentsline {subsection}{\numberline {4.4.3}重み付き平均}{10}{}%
-\contentsline {subsection}{\numberline {4.4.4}バスの時刻と組み合わせた提示する時刻の取得}{11}{}%
-\contentsline {section}{\numberline {4.5}時刻の提示インタフェース}{12}{}%
-\contentsline {subsection}{\numberline {4.5.1}三択の時刻を提示する画面}{12}{}%
-\contentsline {subsection}{\numberline {4.5.2}最多投票の時刻を提示する画面}{13}{}%
-\contentsline {subsection}{\numberline {4.5.3}待機画面}{14}{}%
-\contentsline {section}{\numberline {4.6}組織内コミュニケーションツールでの投票}{14}{}%
-\contentsline {chapter}{\numberline {第5章}評価実験}{16}{}%
-\contentsline {section}{\numberline {5.1}実験環境}{16}{}%
-\contentsline {section}{\numberline {5.2}滞在履歴の比較}{16}{}%
-\contentsline {subsection}{\numberline {5.2.1}同行機会の比較}{17}{}%
-\contentsline {subsection}{\numberline {5.2.2}同行人数の比較}{17}{}%
-\contentsline {section}{\numberline {5.3}アンケート結果}{18}{}%
-\contentsline {subsection}{\numberline {5.3.1}システムの利用率}{18}{}%
-\contentsline {subsection}{\numberline {5.3.2}退室時のコミュニケーションの有効性}{18}{}%
-\contentsline {subsection}{\numberline {5.3.3}システム・インタフェースで気になった点}{18}{}%
-\contentsline {section}{\numberline {5.4}考察}{18}{}%
-\contentsline {chapter}{\numberline {第6章}おわりに}{20}{}%
-\contentsline {section}{\numberline {6.1}まとめ}{20}{}%
-\contentsline {section}{\numberline {6.2}今後の課題}{20}{}%
+\contentsline {section}{\numberline {2.1}行動変容に関する研究}{3}{}%
+\contentsline {section}{\numberline {2.2}インフォーマルなコミュニケーションを支援する研究}{3}{}%
+\contentsline {section}{\numberline {2.3}情報提示による行動変容支援に関する研究}{4}{}%
+\contentsline {section}{\numberline {2.4}屋内で人の位置推定を行う手法に関する研究}{5}{}%
+\contentsline {section}{\numberline {2.5}人の位置情報を活用する研究}{5}{}%
+\contentsline {chapter}{\numberline {第3章}未来の在室状況予測}{7}{}%
+\contentsline {section}{\numberline {3.1}滞在ウォッチ}{7}{}%
+\contentsline {section}{\numberline {3.2}予測モデルと精度検証}{8}{}%
+\contentsline {section}{\numberline {3.3}予測の提供と来訪促進システム}{9}{}%
+\contentsline {chapter}{\numberline {第4章}帰宅同行支援システム：leaving-match}{11}{}%
+\contentsline {section}{\numberline {4.1}想定利用環境}{11}{}%
+\contentsline {section}{\numberline {4.2}提案システムの要件}{12}{}%
+\contentsline {paragraph}{ユーザの意図や関心が推測されない}{12}{}%
+\contentsline {paragraph}{特定の人物に対してのみ情報が共有されない}{12}{}%
+\contentsline {paragraph}{投票や帰宅を選択しない場合でも不自然にならない}{12}{}%
+\contentsline {paragraph}{個人の行動を特定可能な情報を公開しない}{13}{}%
+\contentsline {section}{\numberline {4.3}システムの構成と処理フロー}{13}{}%
+\contentsline {section}{\numberline {4.4}データ管理}{14}{}%
+\contentsline {subsection}{\numberline {4.4.1}データベース設計}{14}{}%
+\contentsline {subsection}{\numberline {4.4.2}API設計}{16}{}%
+\contentsline {section}{\numberline {4.5}提示する時刻の算出}{17}{}%
+\contentsline {subsection}{\numberline {4.5.1}帰宅予測時刻の取得}{17}{}%
+\contentsline {subsection}{\numberline {4.5.2}最多区間の抽出}{17}{}%
+\contentsline {subsection}{\numberline {4.5.3}重み付き平均}{18}{}%
+\contentsline {subsection}{\numberline {4.5.4}バスの時刻と組み合わせた提示する時刻の取得}{19}{}%
+\contentsline {section}{\numberline {4.6}時刻の提示インタフェース}{19}{}%
+\contentsline {subsection}{\numberline {4.6.1}三択の時刻を提示する画面}{19}{}%
+\contentsline {subsection}{\numberline {4.6.2}最多投票の時刻を提示する画面}{21}{}%
+\contentsline {subsection}{\numberline {4.6.3}待機画面}{22}{}%
+\contentsline {section}{\numberline {4.7}組織内コミュニケーションツールでの投票}{22}{}%
+\contentsline {chapter}{\numberline {第5章}評価実験}{24}{}%
+\contentsline {section}{\numberline {5.1}実験環境}{24}{}%
+\contentsline {section}{\numberline {5.2}滞在履歴の比較}{25}{}%
+\contentsline {subsection}{\numberline {5.2.1}同行機会の比較}{25}{}%
+\contentsline {subsection}{\numberline {5.2.2}同行人数の比較}{26}{}%
+\contentsline {section}{\numberline {5.3}アンケート結果}{26}{}%
+\contentsline {paragraph}{システムの利用率}{26}{}%
+\contentsline {paragraph}{退室時のコミュニケーションの有効性}{26}{}%
+\contentsline {paragraph}{システム・インタフェースで気になった点}{27}{}%
+\contentsline {section}{\numberline {5.4}考察}{27}{}%
+\contentsline {chapter}{\numberline {第6章}おわりに}{28}{}%
+\contentsline {section}{\numberline {6.1}まとめ}{28}{}%
+\contentsline {section}{\numberline {6.2}今後の課題}{28}{}%
+\contentsline {chapter}{\numberline {} 謝辞}{30}{}%
+\contentsline {chapter}{\numberline {} 参考文献}{32}{}%
+\contentsline {chapter}{\numberline {付 録A }提案システムで作成したAPIリクエスト・レスポンス一覧}{36}{}%

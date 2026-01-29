@@ -2,22 +2,22 @@
 
 % 以上の2つの画面でない状況を示す．
 本画面は，三択の時刻を提示する画面および最多投票の時刻を提示する画面のいずれにも該当しない状態を明確に示すための画面である．
-投票対象外の時間帯や，投票が開始される条件を満たしていない場合，および表示された投票結果の時刻を過ぎた場合に表示される．
+投票対象外の時間帯や，投票が開始される条件を満たしていない場合，および表示された投票結果の時刻を過ぎた場合に図\ref{fig:waitingDisplay}(\subref{fig:wait})のように表示される．
 新たに三択の時刻が設定された際に三択の時刻を提示する画面へと自動的に遷移する．
 
 また，システムが稼働中であると示すため，画面内に小さな動きを付与している．
 これは，画面が停止していると誤認されるのを防ぎ，ユーザに対してシステムが正常に動作していると伝える意図がある．
 
-さらに，投票対象外の時間帯であると視覚的に示すため，画面全体を暗く表示している．
+さらに，投票対象外の時間帯であると視覚的に示すため，図\ref{fig:waitingDisplay}(\subref{fig:stop})のように画面全体を暗く表示している．
 対象外の時間帯は，一般的に深夜および早朝とされる22:00から6:59までとし，この時間帯においては帰宅同行を促す情報提示を抑制する設計とした．
 
 \begin{figure}[htb]
   \centering
-  \subcaptionbox{条件外の場合の画面}{
-    \includegraphics[width=0.4\linewidth]{waitingDisplay.png}}	% suzuki
+  \subcaptionbox{条件外の場合の画面\label{fig:wait}}{
+    \includegraphics[width=0.4\linewidth]{fig/waitingDisplay.png}}	% suzuki
   \hspace{3mm}
-  \subcaptionbox{対象外の時間の画面}{
-    \includegraphics[width=0.4\linewidth]{stoppingDisplay.png}}	% suzuki 
+  \subcaptionbox{対象外の時間の画面\label{fig:stop}}{
+    \includegraphics[width=0.4\linewidth]{fig/stoppingDisplay.png}}	% suzuki 
   \caption{待機画面}
   \label{fig:waitingDisplay}
 \end{figure}
